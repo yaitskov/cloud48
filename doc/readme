@@ -1,0 +1,190 @@
+                  Cloud48   
+
+Application for managing hypervisors of virtualization servers
+and software inside containers (virtual machines).
+
+Virtualization server (VS) is like KVM, XEN or Vz.
+
+VS in terms virtual machines (VM) share resource of a big real
+hardware server (hardnode - HN).
+
+Container is a VM with installed and configured 1 end user software 
+like MySql or Tomcat.
+
+
+Hypervisor governs a one VS. It can create, delete, start, stop, clone,
+migrate, supend, resume containers (VM).
+
+
+Containers can be grouped together in logical profit unit - Environment.
+For example a typical web application requires web server and RDBMS.
+
+It's an environment that consists of 2 containers (web and db).
+
+In short control over 1 specific container is one big job and
+control over group related heterogenous of containers is another big job.
+
+      Layers
+
+  In cuircumstance above I've bold 3 main layers. Layers listed in order of
+  increase their hierachy level.
+
+  +------------------------------------------------------------+
+  |    container inside software (CIS)                         |
+  |       bash scripts, task daemon                            |
+  +------------------------------------------------------------+
+  |    VS hypervisor (VSH)                                     |
+  |       implements operations over containers                |
+  +------------------------------------------------------------+
+  |    cloud core (CC)                                         |
+  |       monitoring VSs and VMs, share VMs between VSs        |
+  |       group VMs into environment, authorization operations |
+  +------------------------------------------------------------+
+
+There are 3 big layers. Let's name them: CC layers, VSH layer and CIS layer.
+
+
+CC layer is more complex. Its main goal balance load and usage VSs by
+VMs at creation new VM or runtime by migrating a VM from one VS to 
+another VS.
+
+
+CC layer should not have big throughput because main operations are usually
+have big duration - cloning VM or creating new from RPMs.
+Such operation requires bit data transfer over network.
+And they doesn't happen too often.
+
+Due these conditions CC should have asynchronous nature.
+It allows to decrease number threads and DB connections.
+It makes processes inside the system more observable.
+It's possible to persist asynchronous operations into DB.
+This increase rebooting ability.
+
+There are 2 core objects into CC layers: EnvironmentManager (EM) 
+and ContainerManager (CM). Also ContainerFactory (CF) has a place.
+
+CM does all container life-cycle: creation, start, stop, resume, suspend,
+destroy, update, reboot, migration, cloning.
+
+CM has to many operations. Each of them is to big to be in one class.
+
++-----------------------------------------------+
+|  ContainerManager                             |
++-----------------------------------------------+
+|  run(ContainerCommand cmd, Container cnt)     |
+|  find(ContainerQuery cntQ)                    |
+|  getById(int)                                 |
+|  get(int)                                     |
+|  put(int)                                     |
++-----------------------------------------------+
+
+All container commands are put into a persisted queue before
+each of them will be executed.
+
+
+Container commands are low level. They doesn't touch other containers
+in an environment of altering container.
+
+
+EnvironmentManager (EM) solve relationship between containers of one
+environment. EM is simple. It doesn't have polymorphic behaviour because
+so many different types of containers. It's just impossible to 
+put in one class of even one tree hierarchy.
+
++------------------------------------
+| EnvironmentManager
++------------------------------------
+|  run(EnvironmentCommand cmd, Environment env)
+|  find
+|  getByPk
+|  get   - lock environment
+|  put   - unlcok enviornment
+|
++-
+
+EnvrinomentCommand can 
+  create new empty environment
+  add a container to an environment
+  remove a container from an environment
+  destroy, start, stop, suspend, resume environment and its containers
+
+Environment commands also are placed to queue before executed.
+
+Commands can refer one each other if one created and wait until child
+command finished.
+
+
+All complex multiple behaviour I place in Container class tree.
+
+Container class has event driven interface.
+
++----------------------------------------------+
+|  Container                                   |
++----------------------------------------------+
+|  getPriority() : int                         |
+|  getId()       : int                         |
+|  beforeItIsAdded(Environment env)            |
+|  afterItIsAdded(Environment env)             |
+|  beforeOtherIsAdded(Environment, Container)  |
+|  afterOtherIsAdded(Environment, Container)   |
+|  isDown(DownCause)                           |
+|  isUp()                                      |
+|  afterCcStart()                              |
+|  beforeCcStop()                              |
++----------------------------------------------+
+
+Hmm how persist polymorphic Container object to DB.
+Container object is not POJO.
+
+getId()  returns unique container id in scope of a platform.
+A platform is all VS is governed by one CC.
+What about guest id of container in case migration another platform.
+
+Some table of origin platform, origin platform container id, guest id
+will be good.
+
+getPriority() returns constant value. It defines in which order
+containers of the same environment or queue to environemnt
+will be invoked. Event handlere of a container with 
+lowest priority value will be called first.
+getPriority can be replaced by annotation.
+
+
+isDown is called if container became is not available for example due
+VS is crashed. If container is balancer then it can emit command to 
+create new balance container on other VS. Old container should become
+illegal because CC will lost reference to it and should be destroyed
+by container collector as soon VS rejoin to the platform.
+
+
+Let's event handlers of a container to be added are called first before
+handlers of containers in environment.
+So if a container is going to be added to an environment then
+beforeItIsAdded is called.
+
+Container event handlers are intended to check ability to add 
+a container to an environment, denie it or run additional
+activity related with such event.
+
+Consider example. There is an empty environment
+and a first tomcat container is adding. It checks that
+environment is empty and do nothing allowing operation.
+
+Second tomcat founds that balancer container is required and adds
+it before himself. Balancer container handler gets that environment
+has one tomcat completely bound to the environment and add its IP
+to nginx. Second tomcat bound to the environment. Again 
+balancer container gets event afterOtherIsAdded and other is web container.
+And balancer adds its IP to ngingx too.
+
+ContainerFactory (CF) looks suitable VS wit specified 
+requirements for future VM and creates there dummy VM.
+
+Such dummy VM will hold place and it will be replaced 
+by real VM when container manager create it or migrate
+existing.
+
+Dummy VM can exists only in scope of migration process 
+or process of creating new container. Theses processes has
+time limitations. In any case process will end in some future.
+So in failure Dummy VM will destroyed by container collector.
