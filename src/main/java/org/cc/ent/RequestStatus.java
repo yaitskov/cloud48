@@ -1,4 +1,4 @@
-package org.cc;
+package org.cc.ent;
 
 /**
  * Daneel Yaitskov

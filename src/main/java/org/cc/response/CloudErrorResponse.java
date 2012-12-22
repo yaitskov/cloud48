@@ -1,4 +1,4 @@
-package org.cc.command;
+package org.cc.response;
 
 /**
  * Daneel Yaitskov

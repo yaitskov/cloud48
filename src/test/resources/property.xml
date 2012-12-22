@@ -13,16 +13,6 @@
     <context:spring-configured/>
     <context:annotation-config/>
     <aop:config proxy-target-class="true"/>
-    <import resource="hsqldb.xml"/>
-
-    <bean class="org.cc.dao.UserDao"/>
-    <bean class="org.cc.dao.UserSessionDao"/>
-
-    <bean class="org.cc.security.CloudSessionAuthenticateFilter" />
-    <bean class="org.cc.props.DynaProSet" />
-    <bean class="org.cc.props.PropertyExposer" />
-    <bean class="org.springframework.core.convert.support.DefaultConversionService" />
-    <bean id="security.anonymous.allow"  class="org.cc.props.DynaBoolPro"/>
 
     <bean id="propertyPlaceholderConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -35,5 +25,14 @@
             </list>
         </property>
     </bean>
+
+    <bean class="org.cc.props.PropertyExposer" />
+    <bean class="org.springframework.core.convert.support.DefaultConversionService" />
+
+    <bean id="test.boolvalt"  class="org.cc.props.DynaBoolPro"/>
+    <bean id="test.boolvalf"  class="org.cc.props.DynaBoolPro"/>
+    <bean id="str.test"  class="org.cc.props.DynaStrPro"/>
+
+    <bean class="org.cc.props.DynaProSet" />
 
 </beans>

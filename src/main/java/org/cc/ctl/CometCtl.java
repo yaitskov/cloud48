@@ -1,7 +1,7 @@
 package org.cc.ctl;
 
-import org.cc.CloudResponse;
-import org.cc.RequestStatus;
+import org.cc.response.CloudResponse;
+import org.cc.ent.RequestStatus;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;

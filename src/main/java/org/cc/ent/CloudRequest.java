@@ -1,7 +1,5 @@
 package org.cc.ent;
 
-import org.cc.RequestStatus;
-
 import javax.persistence.*;
 import java.util.Date;
 

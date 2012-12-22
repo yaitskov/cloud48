@@ -1,6 +1,6 @@
 package org.cc.ctl;
 
-import org.cc.command.CloudErrorResponse;
+import org.cc.response.CloudErrorResponse;
 import org.cc.dao.UserDao;
 import org.cc.dao.UserSessionDao;
 import org.cc.ent.User;

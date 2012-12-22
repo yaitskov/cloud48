@@ -5,6 +5,8 @@ import org.cc.dao.UserDao;
 import org.cc.dao.UserSessionDao;
 import org.cc.ent.User;
 import org.cc.ent.UserSession;
+import org.cc.props.DynaBoolPro;
+import org.cc.props.DynaPro;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.core.AuthenticationException;
@@ -44,7 +46,8 @@ public class CloudSessionAuthenticateFilter extends GenericFilterBean {
     private UserSessionDao sessionDao;
     @Resource
     private UserDao userDao;
-    private boolean allowAnonymous = true;
+    @Resource(name = "security.anonymous.allow")
+    private DynaBoolPro allowAnonymous;
     private String anonymousLogin = NOBODY;
 
     public AuthenticationEntryPoint getAuthenticationEntryPoint() {
@@ -68,7 +71,7 @@ public class CloudSessionAuthenticateFilter extends GenericFilterBean {
         try {
             tryAuthenticate((HttpServletRequest) req, (HttpServletResponse) res);
         } catch (AuthenticationException failed) {
-            if (allowAnonymous) {
+            if (allowAnonymous.get()) {
                 authAsAnonymous((HttpServletRequest) req);
             } else {
                 SecurityContextHolder.clearContext();

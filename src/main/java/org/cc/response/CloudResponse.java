@@ -1,4 +1,4 @@
-package org.cc;
+package org.cc.response;
 
 /**
  * Base object for asynchronous responses of executed commands.
