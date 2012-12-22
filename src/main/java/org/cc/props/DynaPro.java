@@ -4,6 +4,7 @@ import org.cc.util.LogUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -13,7 +14,7 @@ import java.lang.reflect.ParameterizedType;
  * Dynamic place holder that can be updated at runtime.
  * Daneel Yaitskov
  */
-public class DynaPro<T> implements BeanNameAware {
+public abstract class DynaPro<T> implements BeanNameAware {
 
     private static final Logger logger = LogUtil.get();
 
@@ -29,7 +30,7 @@ public class DynaPro<T> implements BeanNameAware {
     private PropertyExposer properties;
 
     @Resource
-    private ConversionService conversionService;
+    private DefaultConversionService conversionService;
 
     @Resource
     private DynaProSet propertySet;
