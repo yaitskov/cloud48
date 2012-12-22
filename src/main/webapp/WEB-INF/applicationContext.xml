@@ -167,9 +167,6 @@
     <tx:annotation-driven transaction-manager="transactionManager"
                           mode="aspectj" proxy-target-class="true"/>
 
-
-    <mvc:default-servlet-handler/>
-    <mvc:resources mapping="/" location="/WEB-INF/static/index.txt"/>
     <bean class="org.springframework.core.convert.support.DefaultConversionService" />
 
     <bean id="security.anonymous.allow" class="org.cc.props.DynaBoolPro"/>
