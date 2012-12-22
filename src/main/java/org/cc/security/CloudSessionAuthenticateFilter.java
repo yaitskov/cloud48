@@ -77,7 +77,8 @@ public class CloudSessionAuthenticateFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
-    protected void tryAuthenticate(HttpServletRequest req, HttpServletResponse res) {
+    @Transactional
+    public void tryAuthenticate(HttpServletRequest req, HttpServletResponse res) {
         String session = req.getParameter("session");
         if (session == null) {
             throw new SessionAuthenticationException("HTTP session attribute is null");
@@ -106,7 +107,6 @@ public class CloudSessionAuthenticateFilter extends GenericFilterBean {
         }
     }
 
-    @Transactional
     public void authAsAnonymous(HttpServletRequest req) {
         // session is valid while it exists
         User anonymous;

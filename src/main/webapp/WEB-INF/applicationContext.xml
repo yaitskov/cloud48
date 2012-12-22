@@ -61,8 +61,8 @@
           class="org.cc.security.CloudSessionAuthenticateFilter">
     </bean>
 
-    <bean id="sessionEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
-
+    <bean id="sessionEncoder"
+          class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
     </bean>
 
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
@@ -94,15 +94,12 @@
         </property>
 
         <!-- </property> value="application/json; charset=UTF-8" /> -->
-        <property name="objectMapper" ref="om">
-
-        </property>
+        <property name="objectMapper" ref="om"/>
     </bean>
 
     <bean id="om" class="com.fasterxml.jackson.databind.ObjectMapper">
         <property name="serializationInclusion" value="NON_EMPTY"/>
     </bean>
-
 
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
     </bean>
@@ -135,7 +132,7 @@
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="showSql" value="false"/>
-                <property name="generateDdl" value="false"/>
+                <property name="generateDdl" value="${db.ddl.generate}"/>
                 <property name="database" value="${db.dialect}"/>
             </bean>
         </property>
