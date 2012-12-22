@@ -68,9 +68,11 @@
     
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <!--<property name=""-->
         <property name="packagesToScan" value="org.cc.ent" />
         <property name="jpaProperties">
             <props>
+                <prop key="hibernate.ejb.entitymanager_factory_name">entityFactory1</prop>
                 <prop key="javax.persistence.lock.timeout">4000</prop>
                 <prop key="hibernate.cache.use_second_level_cache">false</prop>
                 <prop key="hibernate.cache.use_query_cache">false</prop>

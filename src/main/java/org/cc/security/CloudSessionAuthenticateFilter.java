@@ -5,6 +5,7 @@ import org.cc.dao.UserDao;
 import org.cc.dao.UserSessionDao;
 import org.cc.ent.User;
 import org.cc.ent.UserSession;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 public class CloudSessionAuthenticateFilter extends GenericFilterBean {
 
+    public static final String NOBODY = "nobody";
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource
             = new WebAuthenticationDetailsSource();
     private AuthenticationEntryPoint authenticationEntryPoint;
@@ -43,7 +45,7 @@ public class CloudSessionAuthenticateFilter extends GenericFilterBean {
     @Resource
     private UserDao userDao;
     private boolean allowAnonymous = true;
-    private String anonymousLogin = "nobody";
+    private String anonymousLogin = NOBODY;
 
     public AuthenticationEntryPoint getAuthenticationEntryPoint() {
         return authenticationEntryPoint;
@@ -112,7 +114,7 @@ public class CloudSessionAuthenticateFilter extends GenericFilterBean {
         User anonymous;
         try {
             anonymous = userDao.findByLogin(anonymousLogin);
-        } catch (NoResultException e) {
+        } catch (EmptyResultDataAccessException e) {
             anonymous = createAndSaveAnonymous();
         }
         UserSession usrSes = new UserSession(); // no persist

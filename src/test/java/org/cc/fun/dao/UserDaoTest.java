@@ -4,8 +4,6 @@ import junit.framework.Assert;
 import org.cc.dao.UserDao;
 import org.cc.ent.User;
 import org.cc.util.BaseDao;
-import org.cc.util.DbCleaner;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,7 +14,6 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
-import javax.persistence.NoResultException;
 
 /**
  * Daneel Yaitskov

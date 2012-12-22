@@ -20,7 +20,7 @@ public class UserSessionDao extends Dao<UserSession> {
      */
     public UserSession findByKey(String key) {
         Query q = em().createQuery("select s from UserSession s where s.key = :key");
-        q.setParameter(":key", key);
+        q.setParameter("key", key);
         return (UserSession) q.getSingleResult();
     }
 }
