@@ -76,6 +76,9 @@
     </bean>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="webBindingInitializer">
+            <bean class="org.cc.extension.GlobalBinderInitializer" />
+        </property>
         <property name="messageConverters">
             <list>
                 <ref bean="jsonConverter"/>

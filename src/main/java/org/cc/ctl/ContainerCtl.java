@@ -32,14 +32,6 @@ public class ContainerCtl {
 
     private static final Logger logger = LogUtil.get();
 
-    @Autowired
-    private Validator validator;
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.setValidator(validator);
-
-    }
     /**
      * Starts a process of creation new VM.
      * It's asynchronous method.
