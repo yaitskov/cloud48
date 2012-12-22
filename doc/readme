@@ -188,3 +188,18 @@ Dummy VM can exists only in scope of migration process
 or process of creating new container. Theses processes has
 time limitations. In any case process will end in some future.
 So in failure Dummy VM will destroyed by container collector.
+
+
+             Nearest plans:
+
+
+
+  Digest Authentication and Anonymous by default
+
+  Process request for creation VM and persisting it in db and putting in the queue
+
+  Thread pool. Tread takes request from queue. Start processing.
+  Change status. Find best VS. Send command to the hypervisor of VS over
+  ContainerManager and waits answer from CIS or hypervisor.
+
+  Flexible properties (place holders) with BeanNameAware
