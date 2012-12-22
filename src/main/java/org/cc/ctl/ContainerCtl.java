@@ -1,9 +1,22 @@
 package org.cc.ctl;
 
+import org.cc.ent.NewVmSpec;
+import org.cc.response.CloudErrorResponse;
+import org.cc.response.CloudInvalidArgsResponse;
+import org.cc.util.LogUtil;
+import org.cc.util.SecurityUtil;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
 
 /**
  * Takes request from web clients, convert scalar parameters
@@ -17,27 +30,44 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/container")
 public class ContainerCtl {
 
+    private static final Logger logger = LogUtil.get();
 
+    @Autowired
+    private Validator validator;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+
+    }
     /**
      * Starts a process of creation new VM.
      * It's asynchronous method.
      *
-     * @param type      name of base template of VM (software inside)
-     * @param memory    maximum required memory in megabytes
-     * @param core      number cpu cores in VM.
-     * @param frequency max frequency of one cpu core in VM
-     * @param disk      max disk size  in gigabytes
-     * @param network   max network throughput in megabytes per second
      * @return request id.
      */
     @ResponseBody
     @RequestMapping("/create")
-    public int create(@RequestParam("type") String type,
-                      @RequestParam("memory") int memory,
-                      @RequestParam("core") int core,
-                      @RequestParam("frequency") int frequency,
-                      @RequestParam("disk") int disk,
-                      @RequestParam("network") int network) {
-        return 0;
+    public int create(@Valid NewVmSpec vmSpec) {
+        logger.debug("current user {}", SecurityUtil.getCurrent().getLogin());
+        return vmSpec.getCore();
+    }
+
+    @ExceptionHandler(Throwable.class)
+    @ResponseBody
+    public CloudErrorResponse handleOthers(Throwable e) {
+        return new CloudErrorResponse(e);
+    }
+
+    @ExceptionHandler(BindException.class)
+    @ResponseBody
+    public CloudInvalidArgsResponse handlerBind(BindException e) {
+        return new CloudInvalidArgsResponse(e);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
+    public CloudErrorResponse handleValidation(MethodArgumentNotValidException e) {
+        return new CloudErrorResponse(e);
     }
 }
