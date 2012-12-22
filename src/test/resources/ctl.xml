@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="dao.xml" />
+
+    <bean class="org.cc.ctl.UserCtl" />
+    <bean class="org.cc.ctl.AuthenticationCtl" />
+    <bean class="org.cc.ctl.ContainerCtl" />
+    <bean class="org.cc.ctl.CometCtl" />
+
+    <bean id="sessionEncoder"
+          class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
+    </bean>
+
+
+</beans>

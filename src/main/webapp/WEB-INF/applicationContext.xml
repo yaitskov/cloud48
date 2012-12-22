@@ -167,6 +167,7 @@
     <tx:annotation-driven transaction-manager="transactionManager"
                           mode="aspectj" proxy-target-class="true"/>
 
+
     <bean class="org.springframework.core.convert.support.DefaultConversionService" />
 
     <bean id="security.anonymous.allow" class="org.cc.props.DynaBoolPro"/>
