@@ -35,6 +35,7 @@ public class JsonView implements View {
     public void render(Map<String, ?> model, HttpServletRequest request,
                        HttpServletResponse response) throws Exception {
         Object data = model.get(DATA_FIELD_NAME);
+        response.setContentType("application/json");
         OutputStream ostream = response.getOutputStream();
         if (data == null) {
             String err = "Model doesn't have field '" + DATA_FIELD_NAME + "'";
