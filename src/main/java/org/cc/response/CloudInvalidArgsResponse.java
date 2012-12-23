@@ -24,9 +24,13 @@ public class CloudInvalidArgsResponse extends CloudErrorResponse {
 
     public CloudInvalidArgsResponse(BindException e) {
         super(e);
+        StringBuilder builder = new StringBuilder();
         errors = new ArrayList<InvalidField>(e.getErrorCount());
         for (FieldError error : e.getFieldErrors()) {
             errors.add(new InvalidField(error.getField(), error.getDefaultMessage()));
+            builder.append(error.getField()).append(": ")
+                    .append(error.getDefaultMessage()).append(";\n");
         }
+        setMessage(builder.toString());
     }
 }
