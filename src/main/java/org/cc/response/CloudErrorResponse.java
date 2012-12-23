@@ -1,7 +1,5 @@
 package org.cc.response;
 
-import java.util.List;
-
 /**
  * Daneel Yaitskov
  */

@@ -1,6 +1,7 @@
 package org.cc.ctl;
 
 import org.cc.ent.NewVmSpec;
+import org.cc.exception.CloudException;
 import org.cc.response.CloudErrorResponse;
 import org.cc.response.CloudInvalidArgsResponse;
 import org.cc.util.LogUtil;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 
 /**
@@ -43,23 +45,5 @@ public class ContainerCtl {
     public int create(@Valid NewVmSpec vmSpec) {
         logger.debug("current user {}", SecurityUtil.getCurrent().getLogin());
         return vmSpec.getCore();
-    }
-
-    @ExceptionHandler(Throwable.class)
-    @ResponseBody
-    public CloudErrorResponse handleOthers(Throwable e) {
-        return new CloudErrorResponse(e);
-    }
-
-    @ExceptionHandler(BindException.class)
-    @ResponseBody
-    public CloudInvalidArgsResponse handlerBind(BindException e) {
-        return new CloudInvalidArgsResponse(e);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseBody
-    public CloudErrorResponse handleValidation(MethodArgumentNotValidException e) {
-        return new CloudErrorResponse(e);
     }
 }

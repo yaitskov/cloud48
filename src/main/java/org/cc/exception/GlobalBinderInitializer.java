@@ -1,4 +1,4 @@
-package org.cc.extension;
+package org.cc.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Validator;
@@ -7,6 +7,9 @@ import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.context.request.WebRequest;
 
 /**
+ * Bind default validator. It's used by spring for automatic
+ * validation request parameters before action call.
+ *
  * Daneel Yaitskov
  */
 

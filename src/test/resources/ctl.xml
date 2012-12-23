@@ -15,5 +15,20 @@
           class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
     </bean>
 
+    <bean class="org.cc.exception.CloudExceptionHandler">
+        <property name="exceptionResponse">
+            <bean class="org.cc.exception.ValueClassTakesException">
+                <constructor-arg>
+                    <map key-type="java.lang.Class" value-type="java.lang.Class">
+                        <entry key="org.springframework.validation.BindException"
+                               value="org.cc.response.CloudInvalidArgsResponse" />
+                        <entry key="java.lang.Exception"
+                               value="org.cc.response.CloudErrorResponse" />
+                    </map>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
 
 </beans>

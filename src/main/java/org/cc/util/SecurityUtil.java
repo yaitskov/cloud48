@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
+ * Access to spring security context.
  * Daneel Yaitskov
  */
 public class SecurityUtil {
@@ -13,6 +14,7 @@ public class SecurityUtil {
     /**
      * Returns user who send current HTTP request.
      * @return user who send current HTTP request
+     * @throws IllegalStateException
      */
     public static User getCurrent() {
         SecurityContext context = SecurityContextHolder.getContext();
