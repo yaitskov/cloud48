@@ -21,4 +21,5 @@
 
     <bean class="org.cc.dao.UserDao"/>
     <bean class="org.cc.dao.UserSessionDao"/>
+    <bean class="org.cc.dao.CloudRequestDao" />
 </beans>

@@ -112,6 +112,7 @@ public class CloudSessionAuthenticateFilter extends GenericFilterBean {
         }
     }
 
+    @Transactional
     public void authAsAnonymous(HttpServletRequest req) {
         // session is valid while it exists
         User anonymous;

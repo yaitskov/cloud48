@@ -13,7 +13,7 @@ public class UserSession extends AbstractEntity {
     /**
      * Unique session key.
      */
-    @Column
+    @Column(name = "skey", unique = true)
     private String key;
 
     /**

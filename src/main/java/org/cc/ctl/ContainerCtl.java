@@ -1,6 +1,10 @@
 package org.cc.ctl;
 
+import org.cc.dao.CloudRequestDao;
+import org.cc.ent.CreateVmRequest;
 import org.cc.ent.NewVmSpec;
+import org.cc.ent.RequestStatus;
+import org.cc.ent.User;
 import org.cc.exception.CloudException;
 import org.cc.response.CloudErrorResponse;
 import org.cc.response.CloudInvalidArgsResponse;
@@ -16,8 +20,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Date;
 
 
 /**
@@ -34,6 +40,11 @@ public class ContainerCtl {
 
     private static final Logger logger = LogUtil.get();
 
+    @Resource
+    private CloudRequestDao requestDao;
+
+
+
     /**
      * Starts a process of creation new VM.
      * It's asynchronous method.
@@ -43,7 +54,16 @@ public class ContainerCtl {
     @ResponseBody
     @RequestMapping("/create")
     public int create(@Valid NewVmSpec vmSpec) {
-        logger.debug("current user {}", SecurityUtil.getCurrent().getLogin());
-        return vmSpec.getCore();
+        User user = SecurityUtil.getCurrent();
+
+        CreateVmRequest request = new CreateVmRequest();
+        request.setAuthor(user);
+        // todo: validate type
+        request.setSpec(vmSpec);
+        request.setStatus(RequestStatus.IN_QUEUE);
+        request.setCreated(new Date());
+        requestDao.save(request);
+
+        return request.getId();
     }
 }
