@@ -363,5 +363,22 @@
             <artifactId>google-http-client</artifactId>
             <version>1.12.0-beta</version>
         </dependency>
+        <!--<dependency>  wait spring 3.2 release to test request param validators -->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-test-mvc</artifactId>-->
+            <!--<version></version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
     </dependencies>
+
+    <!--<repositories>-->
+        <!--<repository>-->
+            <!--<id>spring-maven-snapshot</id>-->
+            <!--<snapshots>-->
+                <!--<enabled>true</enabled>-->
+            <!--</snapshots>-->
+            <!--<name>Springframework Maven SNAPSHOT Repository</name>-->
+            <!--<url>http://maven.springframework.org/snapshot</url>-->
+        <!--</repository>-->
+    <!--</repositories>-->
 </project>

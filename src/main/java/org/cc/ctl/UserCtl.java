@@ -2,8 +2,10 @@ package org.cc.ctl;
 
 import org.cc.dao.UserDao;
 import org.cc.ent.User;
+import org.cc.ent.UserCredential;
 import org.cc.exception.UserAlreadyExistException;
 import org.cc.response.CloudErrorResponse;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Isolation;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.ValidationException;
 
 /**
@@ -37,29 +40,25 @@ public class UserCtl {
     @Transactional //(propagation = Propagation.REQUIRES_NEW)
     @RequestMapping("/create")
     @ResponseBody
-    public int create(@RequestParam("login") String login,
-                      @RequestParam("pass") String pass)
+    public int create(@Valid UserCredential creds)
             throws UserAlreadyExistException {
         try {
-            userDao.findByLogin(login);
-            throw new UserAlreadyExistException("user '" + login + "' is already exist");
+            userDao.findByLogin(creds.getLogin());
+            throw new UserAlreadyExistException("user '" + creds.getLogin() + "' is already exist");
         } catch (EmptyResultDataAccessException e) {
             User u = new User();
-            u.setLogin(login);
-            if (login.isEmpty()) {
-                throw new ValidationException("'login' field is empty");
-            }
-            u.setPass(pass);
+            u.setLogin(creds.getLogin());
+            u.setPass(creds.getPass());
             userDao.save(u);
             return u.getId();
         }
     }
-
-    @ExceptionHandler({
-            UserAlreadyExistException.class,
-            ValidationException.class})
-    @ResponseBody
-    public CloudErrorResponse handleAuthException(Exception e, HttpServletResponse resp) {
-        return new CloudErrorResponse(e);
-    }
+//
+//    @ExceptionHandler({
+//            UserAlreadyExistException.class,
+//            ValidationException.class})
+//    @ResponseBody
+//    public CloudErrorResponse handleAuthException(Exception e, HttpServletResponse resp) {
+//        return new CloudErrorResponse(e);
+//    }
 }

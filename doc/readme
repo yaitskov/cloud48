@@ -194,7 +194,7 @@ So in failure Dummy VM will destroyed by container collector.
 
 
 
-  Digest Authentication and Anonymous by default
+  + Digest Authentication and Anonymous by default
 
   Process request for creation VM and persisting it in db and putting in the queue
 
@@ -202,4 +202,4 @@ So in failure Dummy VM will destroyed by container collector.
   Change status. Find best VS. Send command to the hypervisor of VS over
   ContainerManager and waits answer from CIS or hypervisor.
 
-  Flexible properties (place holders) with BeanNameAware
+  + Flexible properties (place holders) with BeanNameAware
