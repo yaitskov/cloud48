@@ -13,6 +13,7 @@ import org.cc.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
@@ -53,6 +54,7 @@ public class ContainerCtl {
      */
     @ResponseBody
     @RequestMapping("/create")
+    @Transactional
     public int create(@Valid NewVmSpec vmSpec) {
         User user = SecurityUtil.getCurrent();
 
