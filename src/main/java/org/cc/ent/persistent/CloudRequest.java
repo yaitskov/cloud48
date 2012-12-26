@@ -9,7 +9,9 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Entity is an asynchronous command.
+ * Base entity for asynchronous command.
+ * It's loaded by {@link org.cc.service.CommandExecutor}
+ * and removed it in success or fail case.
  *
  * Daneel Yaitskov
  */
@@ -74,6 +76,15 @@ public class CloudRequest extends AbstractEntity {
         this.spentTime = spentTime;
     }
 
+    /**
+     * Override it. This method is executed in transaction
+     * so don't sleep here or run any heavy task.
+     * Launch a heavy task asynchronously.
+     * Let sub task notify this entity itself over REST API
+     * or somehow.
+     *
+     * @throws CloudException
+     */
     public void execute() throws CloudException {
         logger.debug("do nothing");
     }

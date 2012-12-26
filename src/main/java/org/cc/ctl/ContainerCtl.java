@@ -7,6 +7,7 @@ import org.cc.ent.persistent.Nop;
 import org.cc.exception.QueueFullException;
 import org.cc.service.RequestQueueService;
 import org.cc.util.LogUtil;
+import org.cc.util.TraceArgsReturn;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,7 @@ public class ContainerCtl {
      *
      * @return request id.
      */
+    @TraceArgsReturn
     @ResponseBody
     @RequestMapping("/create")
     @Transactional(rollbackFor = Throwable.class)
@@ -56,6 +58,7 @@ public class ContainerCtl {
      * amount of milliseconds.
      * @return request id
      */
+    @TraceArgsReturn
     @ResponseBody
     @RequestMapping("/nop")
     @Transactional(rollbackFor = Throwable.class)
