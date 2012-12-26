@@ -1,5 +1,9 @@
 package org.cc.ent;
 
+import org.cc.exception.CloudException;
+import org.cc.util.LogUtil;
+import org.slf4j.Logger;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -13,6 +17,8 @@ import java.util.Date;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "cmd", discriminatorType = DiscriminatorType.STRING)
 public class CloudRequest extends AbstractEntity {
+
+    private static final Logger logger = LogUtil.get();
 
     @ManyToOne
     @JoinColumn(name = "author")
@@ -65,5 +71,9 @@ public class CloudRequest extends AbstractEntity {
 
     public void setSpentTime(long spentTime) {
         this.spentTime = spentTime;
+    }
+
+    public void execute() throws CloudException {
+        logger.debug("do nothing");
     }
 }

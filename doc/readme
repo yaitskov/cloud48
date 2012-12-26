@@ -203,3 +203,20 @@ So in failure Dummy VM will destroyed by container collector.
   ContainerManager and waits answer from CIS or hypervisor.
 
   + Flexible properties (place holders) with BeanNameAware
+
+  May be Hadoop is what I reinvent:) ?
+
+  per user quotas for number commands (group by types) in queue.
+  per user quotas for already executed commands
+
+  total queue size limit
+  reload queue from db at reboot.
+
+  Dynamic number threads processing commands.
+
+  Hazelcast distributed queue and locks.
+
+  Security context in pool threads.
+
+
+

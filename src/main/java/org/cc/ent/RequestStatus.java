@@ -11,7 +11,9 @@ public enum RequestStatus {
      */
     IN_QUEUE,
     /**
-     * Cloud request finished client can get result
+     * Cloud request is finished and its client can get result.
+     * Command should place answer to response queue.
+     * Request object is automatically deleted.
      */
     OK,
     /**

@@ -20,9 +20,10 @@
 
 
     <bean id="security.anonymous.allow" class="org.cc.props.DynaBoolPro"/>
-
+    <bean id="tpool.command.size" class="org.cc.props.DynaIntPro"/>
     <!--conversion for bean properties-->
     <bean class="org.springframework.core.convert.support.DefaultConversionService" />
+
 
 
 </beans>

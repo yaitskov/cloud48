@@ -33,8 +33,7 @@
     <import resource="dao.xml" />
 
     <bean id="commandQueue" class="java.util.concurrent.ArrayBlockingQueue">
-        <constructor-arg value="100" />
+        <constructor-arg value="${queue.command.size}" />
         <constructor-arg value="true" />
     </bean>
-
 </beans>

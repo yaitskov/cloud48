@@ -1,13 +1,12 @@
 package org.cc.ctl;
 
 import org.cc.dao.CloudRequestDao;
-import org.cc.ent.CreateVmRequest;
-import org.cc.ent.NewVmSpec;
-import org.cc.ent.RequestStatus;
-import org.cc.ent.User;
+import org.cc.ent.*;
 import org.cc.exception.CloudException;
+import org.cc.exception.QueueFullException;
 import org.cc.response.CloudErrorResponse;
 import org.cc.response.CloudInvalidArgsResponse;
+import org.cc.service.RequestQueueService;
 import org.cc.util.LogUtil;
 import org.cc.util.SecurityUtil;
 import org.slf4j.Logger;
@@ -43,17 +42,7 @@ public class ContainerCtl {
     private static final Logger logger = LogUtil.get();
 
     @Resource
-    private CloudRequestDao requestDao;
-
-    /**
-     * Queue of primary keys of cloud request table.
-     * I could place command ids into JMS queue with
-     * XA transaction it's COOL but it's slow.
-     *
-     * This local queue should be replaced with Hazelcast queue.
-     */
-    @Resource(name = "commandQueue")
-    private BlockingQueue<Integer> requestQueue;
+    private RequestQueueService requestQueue;
 
     /**
      * Starts a process of creation new VM.
@@ -63,21 +52,29 @@ public class ContainerCtl {
      */
     @ResponseBody
     @RequestMapping("/create")
-    @Transactional
-    public int create(@Valid NewVmSpec vmSpec) {
-        User user = SecurityUtil.getCurrent();
-
+    @Transactional(rollbackFor = Throwable.class)
+    public int create(@Valid NewVmSpec vmSpec) throws QueueFullException {
         CreateVmRequest request = new CreateVmRequest();
-        request.setAuthor(user);
         // todo: validate type Enum or String?
         request.setSpec(vmSpec);
-        request.setStatus(RequestStatus.IN_QUEUE);
-        request.setCreated(new Date());
-        requestDao.save(request);
-
-        requestQueue.offer(request.getId());
+        requestQueue.enqueue(request);
         logger.debug("/container/create {} => {}", vmSpec, request.getId());
-
         return request.getId();
+    }
+
+    /**
+     * Adds to queue dummy asynchronous command that can sleep specified
+     * amount of milliseconds.
+     * @return request id
+     */
+    @ResponseBody
+    @RequestMapping("/nop")
+    @Transactional(rollbackFor = Throwable.class)
+    public int noOperation(@Valid Delay delay) throws QueueFullException {
+        Nop nop = new Nop();
+        nop.setDelay(delay);
+        requestQueue.enqueue(nop);
+        logger.debug("/container/nop {} => request id {}", delay, nop.getId());
+        return nop.getId();
     }
 }
