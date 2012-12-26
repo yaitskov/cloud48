@@ -1,16 +1,15 @@
-package org.cc.ent;
+package org.cc.ent.persistent;
 
+import org.cc.ent.RequestStatus;
+import org.cc.ent.arg.Delay;
+import org.cc.ent.persistent.CloudRequest;
 import org.cc.exception.CloudException;
 import org.cc.util.LogUtil;
-import org.hibernate.annotations.Columns;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.validation.constraints.Null;
 
 /**
  * Daneel Yaitskov

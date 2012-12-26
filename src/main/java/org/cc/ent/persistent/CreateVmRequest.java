@@ -1,4 +1,7 @@
-package org.cc.ent;
+package org.cc.ent.persistent;
+
+import org.cc.ent.arg.NewVmSpec;
+import org.cc.ent.persistent.CloudRequest;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;

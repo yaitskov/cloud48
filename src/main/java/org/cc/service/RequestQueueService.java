@@ -1,9 +1,9 @@
 package org.cc.service;
 
 import org.cc.dao.CloudRequestDao;
-import org.cc.ent.CloudRequest;
+import org.cc.ent.persistent.CloudRequest;
 import org.cc.ent.RequestStatus;
-import org.cc.ent.User;
+import org.cc.ent.persistent.User;
 import org.cc.exception.QueueFullException;
 import org.cc.util.SecurityUtil;
 import org.springframework.stereotype.Service;

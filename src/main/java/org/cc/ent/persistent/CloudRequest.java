@@ -1,5 +1,6 @@
-package org.cc.ent;
+package org.cc.ent.persistent;
 
+import org.cc.ent.RequestStatus;
 import org.cc.exception.CloudException;
 import org.cc.util.LogUtil;
 import org.slf4j.Logger;

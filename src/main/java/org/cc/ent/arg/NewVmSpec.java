@@ -1,4 +1,4 @@
-package org.cc.ent;
+package org.cc.ent.arg;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.RequestParam;

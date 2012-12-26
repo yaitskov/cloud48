@@ -1,6 +1,6 @@
 package org.cc.util;
 
-import org.cc.ent.User;
+import org.cc.ent.persistent.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,6 +1,6 @@
 package org.cc.security;
 
-import org.cc.ent.UserSession;
+import org.cc.ent.persistent.UserSession;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 

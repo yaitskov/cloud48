@@ -1,13 +1,12 @@
 package org.cc.service;
 
 import org.cc.dao.CloudRequestDao;
-import org.cc.ent.CloudRequest;
+import org.cc.ent.persistent.CloudRequest;
 import org.cc.ent.RequestStatus;
 import org.cc.exception.CloudException;
 import org.cc.props.DynaIntPro;
 import org.cc.util.LogUtil;
 import org.slf4j.Logger;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

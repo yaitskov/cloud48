@@ -1,6 +1,6 @@
 package org.cc.dao;
 
-import org.cc.ent.UserSession;
+import org.cc.ent.persistent.UserSession;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;

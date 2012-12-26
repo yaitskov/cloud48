@@ -1,30 +1,19 @@
 package org.cc.ctl;
 
-import org.cc.dao.CloudRequestDao;
-import org.cc.ent.*;
-import org.cc.exception.CloudException;
+import org.cc.ent.arg.Delay;
+import org.cc.ent.arg.NewVmSpec;
+import org.cc.ent.persistent.CreateVmRequest;
+import org.cc.ent.persistent.Nop;
 import org.cc.exception.QueueFullException;
-import org.cc.response.CloudErrorResponse;
-import org.cc.response.CloudInvalidArgsResponse;
 import org.cc.service.RequestQueueService;
 import org.cc.util.LogUtil;
-import org.cc.util.SecurityUtil;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.util.Date;
-import java.util.concurrent.BlockingQueue;
 
 
 /**

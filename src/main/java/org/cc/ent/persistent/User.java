@@ -1,25 +1,25 @@
-package org.cc.ent;
+package org.cc.ent.persistent;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.cc.ent.persistent.AbstractEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
+ * Account sends commands to the cloud.
+ *
  * Daneel Yaitskov
  */
-public class UserCredential {
+@Entity
+@Table(name = "t_user")
+public class User extends AbstractEntity {
 
-    @NotEmpty
+    @Column
     private String login;
 
-    @NotEmpty
+    @Column
     private String pass;
-
-    public UserCredential(String login, String pass) {
-        this.login = login;
-        this.pass = pass;
-    }
-
-    public UserCredential() {
-    }
 
     public String getLogin() {
         return login;

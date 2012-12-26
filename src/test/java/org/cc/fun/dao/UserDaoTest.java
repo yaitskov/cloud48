@@ -2,7 +2,7 @@ package org.cc.fun.dao;
 
 import junit.framework.Assert;
 import org.cc.dao.UserDao;
-import org.cc.ent.User;
+import org.cc.ent.persistent.User;
 import org.cc.util.BaseDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;

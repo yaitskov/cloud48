@@ -1,4 +1,4 @@
-package org.cc.ent;
+package org.cc.ent.persistent;
 
 import org.hibernate.proxy.HibernateProxy;
 
