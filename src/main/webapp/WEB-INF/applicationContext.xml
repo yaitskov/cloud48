@@ -22,176 +22,19 @@
        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd"
        default-autowire="byName">
 
-    <bean id="propertyPlaceholderConfigurer"
-          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="ignoreResourceNotFound" value="true"/>
-        <property name="ignoreUnresolvablePlaceholders" value="false"/>
-        <property name="order" value="0"/>
-        <property name="locations">
-            <list>
-                <value>classpath*:cloud.properties</value>
-                <value>file:${catalina.home}/conf/cloud.properties</value>
-                <value>file:${catalina.base}/conf/cloud.properties</value>
-            </list>
-        </property>
-    </bean>
-
     <context:spring-configured/>
     <context:component-scan base-package="org.cc"/>
     <context:annotation-config/>
     <mvc:annotation-driven/>
 
+    <import resource="props.xml" />
+    <import resource="security.xml" />
+    <import resource="rest.xml" />
+    <import resource="dao.xml" />
 
-    <sec:http auto-config='false' create-session="never"
-              authentication-manager-ref="dummy-auth-manager"
-              pattern="/**"
-              entry-point-ref="dummy-entry-point">
-        <sec:intercept-url pattern='/auth/**' access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <sec:intercept-url pattern='/' access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <sec:intercept-url pattern='/**' access="ROLE_USER"/>
-        <sec:custom-filter ref="session-filter-set" position="BASIC_AUTH_FILTER"/>
-    </sec:http>
-
-    <bean class="org.cc.security.DummyAuthenticationProvider" />
-
-    <bean id="dummy-auth-manager"
-          class="org.cc.security.DummyAuthenticationManager" />
-    <bean id="dummy-entry-point"
-          class="org.cc.security.DummyAuthenticationEntryPoint" />
-
-    <bean id="session-filter-set"
-          class="org.cc.security.CloudSessionAuthenticateFilter">
+    <bean id="commandQueue" class="java.util.concurrent.ArrayBlockingQueue">
+        <constructor-arg value="100" />
+        <constructor-arg value="true" />
     </bean>
-
-    <bean id="sessionEncoder"
-          class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
-    </bean>
-
-    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-        <property name="messageConverters">
-            <list>
-                <ref bean="jsonConverter"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-        <property name="webBindingInitializer">
-            <bean class="org.cc.exception.GlobalBinderInitializer" />
-        </property>
-        <property name="messageConverters">
-            <list>
-                <ref bean="jsonConverter"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="outboundExceptionAdapter"
-          class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
-
-        <property name="messageConverters">
-            <list>
-                <ref bean="jsonConverter"/>
-            </list>
-        </property>
-    </bean>
-
-
-    <bean id="jsonConverter"
-          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-        <property name="supportedMediaTypes">
-            <list>
-                <bean class="org.springframework.http.MediaType">
-                    <constructor-arg index="0" value="application"/>
-                    <constructor-arg index="1" value="json"/>
-                    <constructor-arg index="2" value="UTF-8"/>
-                </bean>
-            </list>
-        </property>
-
-        <!-- </property> value="application/json; charset=UTF-8" /> -->
-        <property name="objectMapper" ref="om"/>
-    </bean>
-
-    <bean id="om" class="com.fasterxml.jackson.databind.ObjectMapper">
-        <property name="serializationInclusion" value="NON_EMPTY"/>
-    </bean>
-
-    <bean class="org.cc.exception.CloudExceptionHandler">
-        <property name="jview">
-            <bean class="org.cc.exception.JsonView" />
-        </property>
-        <property name="exceptionResponse">
-            <bean class="org.cc.exception.ValueClassTakesException">
-                <constructor-arg>
-                    <map key-type="java.lang.Class" value-type="java.lang.Class">
-                        <entry key="org.springframework.validation.BindException"
-                               value="org.cc.response.CloudInvalidArgsResponse" />
-                        <entry key="java.lang.Exception"
-                               value="org.cc.response.CloudErrorResponse" />
-                    </map>
-                </constructor-arg>
-            </bean>
-        </property>
-    </bean>
-
-    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-    </bean>
-
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
-          destroy-method="close">
-        <property name="driverClass" value="${db.driver}"/>
-        <property name="jdbcUrl" value="${db.url}"/>
-        <property name="username" value="${db.login}"/>
-        <property name="password" value="${db.pass}"/>
-        <property name="maxConnectionsPerPartition" value="1"/>
-        <property name="minConnectionsPerPartition" value="1"/>
-        <property name="partitionCount" value="1"/>
-    </bean>
-
-    <bean id="postProcessor"
-          class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
-    <bean id="entityManagerFactory"
-          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="packagesToScan" value="org.cc.ent"/>
-        <property name="jpaProperties">
-            <props>
-                <prop key="javax.persistence.lock.timeout">4000</prop>
-            </props>
-        </property>
-        <property name="loadTimeWeaver">
-            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
-        </property>
-        <property name="dataSource" ref="dataSource"/>
-        <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="showSql" value="false"/>
-                <property name="generateDdl" value="${db.ddl.generate}"/>
-                <property name="database" value="${db.dialect}"/>
-            </bean>
-        </property>
-    </bean>
-
-    <bean class="com.googlecode.genericdao.search.jpa.JPASearchProcessor">
-        <constructor-arg name="mdu">
-            <bean
-                    class="com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil">
-            </bean>
-        </constructor-arg>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
-    </bean>
-
-
-    <tx:annotation-driven transaction-manager="transactionManager"
-                          mode="aspectj" proxy-target-class="true"/>
-
-
-    <bean class="org.springframework.core.convert.support.DefaultConversionService" />
-
-    <bean id="security.anonymous.allow" class="org.cc.props.DynaBoolPro"/>
 
 </beans>

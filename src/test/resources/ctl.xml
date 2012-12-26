@@ -29,4 +29,10 @@
             </bean>
         </property>
     </bean>
+
+
+    <bean id="commandQueue" class="java.util.concurrent.ArrayBlockingQueue">
+        <constructor-arg value="100" />
+        <constructor-arg value="true" />
+    </bean>
 </beans>

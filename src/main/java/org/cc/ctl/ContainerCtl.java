@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
 
 
 /**
@@ -44,7 +45,15 @@ public class ContainerCtl {
     @Resource
     private CloudRequestDao requestDao;
 
-
+    /**
+     * Queue of primary keys of cloud request table.
+     * I could place command ids into JMS queue with
+     * XA transaction it's COOL but it's slow.
+     *
+     * This local queue should be replaced with Hazelcast queue.
+     */
+    @Resource(name = "commandQueue")
+    private BlockingQueue<Integer> requestQueue;
 
     /**
      * Starts a process of creation new VM.
@@ -60,11 +69,14 @@ public class ContainerCtl {
 
         CreateVmRequest request = new CreateVmRequest();
         request.setAuthor(user);
-        // todo: validate type
+        // todo: validate type Enum or String?
         request.setSpec(vmSpec);
         request.setStatus(RequestStatus.IN_QUEUE);
         request.setCreated(new Date());
         requestDao.save(request);
+
+        requestQueue.offer(request.getId());
+        logger.debug("/container/create {} => {}", vmSpec, request.getId());
 
         return request.getId();
     }

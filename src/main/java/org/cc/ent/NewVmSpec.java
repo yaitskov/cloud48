@@ -109,4 +109,9 @@ public class NewVmSpec {
     public void setNetwork(int network) {
         this.network = network;
     }
+
+    @Override
+    public String toString() {
+        return String.format("vm %dMHz/%d/%dMb/%dGb", frequency, core, memory, disk);
+    }
 }

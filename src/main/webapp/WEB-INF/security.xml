@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <sec:http auto-config='false' create-session="never"
+              authentication-manager-ref="dummy-auth-manager"
+              pattern="/**"
+              entry-point-ref="dummy-entry-point">
+        <sec:intercept-url pattern='/auth/**' access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <sec:intercept-url pattern='/' access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <sec:intercept-url pattern='/**' access="ROLE_USER"/>
+        <sec:custom-filter ref="session-filter-set" position="BASIC_AUTH_FILTER"/>
+    </sec:http>
+
+    <bean class="org.cc.security.DummyAuthenticationProvider" />
+
+    <bean id="dummy-auth-manager"
+          class="org.cc.security.DummyAuthenticationManager" />
+    <bean id="dummy-entry-point"
+          class="org.cc.security.DummyAuthenticationEntryPoint" />
+
+    <bean id="session-filter-set"
+          class="org.cc.security.CloudSessionAuthenticateFilter">
+    </bean>
+
+    <bean id="sessionEncoder"
+          class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
+    </bean>
+
+</beans>
