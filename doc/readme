@@ -220,3 +220,11 @@ So in failure Dummy VM will destroyed by container collector.
 
 
 
+         Shared version.
+
+   Each instance has own DB.  Instances is not related with hazelcast.
+
+   Instances
+
+
+

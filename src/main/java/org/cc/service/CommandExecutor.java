@@ -4,9 +4,11 @@ import org.cc.dao.CloudRequestDao;
 import org.cc.ent.persistent.CloudRequest;
 import org.cc.ent.RequestStatus;
 import org.cc.exception.CloudException;
+import org.cc.exception.InproperRequestStatusException;
 import org.cc.props.DynaIntPro;
 import org.cc.util.LogUtil;
 import org.slf4j.Logger;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,12 +68,31 @@ public class CommandExecutor {
             Integer cmdId = commandQueue.take();
             logger.debug("took command {}", cmdId);
             try {
-                loadAndExecute(cmdId);
+                CloudRequest request = loadAndMark(cmdId);
+                logger.debug("request {} is {}", cmdId, request);
+                request.execute();
+                handleExit(request);
+            } catch (InproperRequestStatusException e) {
+                logger.error("invalid status", e); // should removed with collector thread by timeout
             } catch (CloudException e) {
                 handleException(e, cmdId);
             } catch (Throwable e) {
                 handleException(e, cmdId);
             }
+        }
+    }
+
+    /**
+     * Persist data or remove finished request.
+     * @param request
+     */
+    @Transactional
+    public void handleExit(CloudRequest request) {
+        if (request.getStatus() == RequestStatus.OK) {
+            requestDao.remove(request);
+            logger.debug("request {} is finished. remove it", request.getId());
+        } else {
+            requestDao.merge(request);
         }
     }
 
@@ -82,17 +103,15 @@ public class CommandExecutor {
     }
 
     @Transactional
-    public void loadAndExecute(Integer cmdId) throws CloudException {
+    public CloudRequest loadAndMark(Integer cmdId) throws CloudException {
         CloudRequest request = requestDao.find(cmdId);
         if (request == null) {
-            logger.error("request {} isn't found in DB. skip.", cmdId);
-            return;
+            throw new EmptyResultDataAccessException("request '" + cmdId + "' isn't found in DB. skip.", 1);
         }
-        logger.debug("request {} is {}", cmdId, request);
-        request.execute();
-        if (request.getStatus() == RequestStatus.OK) {
-            requestDao.remove(request);
-            logger.debug("request {} is finished. remove it", request.getId());
+        if (request.getStatus() != RequestStatus.IN_QUEUE) {
+            throw new InproperRequestStatusException(RequestStatus.RUNNING, request.getStatus(), cmdId);
         }
+        request.setStatus(RequestStatus.RUNNING);
+        return request;
     }
 }
